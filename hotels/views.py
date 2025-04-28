@@ -1,24 +1,29 @@
 from rest_framework import generics
 from .models import Hotel,Tiffin
 from .serializers import HotelSerializer,TiffinSerializer
-from accounts.permissions import IsHotelOwner
+from accounts.permissions import IsAdminOrHotelOwner
 
 class HotelCreateListView(generics.ListCreateAPIView):
-    queryset=Hotel.objects.all()
-    serializer_class=HotelSerializer
-    permission_classes=[IsHotelOwner]
+    queryset = Hotel.objects.all()
+    serializer_class = HotelSerializer
+    permission_classes = [IsAdminOrHotelOwner]
 
     def get_queryset(self):
-        return self.queryset.filter(owner=self.request.user) #Only hotel_owner see hotels
-
+          # Allow hotel owners to see their own hotels, but admins can see all
+         if self.request.user.role == 'hotel_owner':
+           return self.queryset.filter(owner=self.request.user)
+         return self.queryset.all() 
+   
 
 class TiffinCreateView(generics.CreateAPIView):
         queryset=Tiffin.objects.all()
         serializer_class=TiffinSerializer
-        # permission_classes=[IsHotelOwner] #Only hotel_owner create hotels
+        permission_classes=[IsAdminOrHotelOwner] #Only hotel_owner create hotels
 
-        # def get_queryset(self):
-        #  return self.queryset.filter(hotel_owner=self.request.user) 
+        def get_queryset(self):
+         if self.request.user.role == 'hotel_owner':
+             return self.queryset.filter(hotel_owner=self.request.user) 
+         return self.queryset.all()
         
 class TiffinListView(generics.ListAPIView):
     queryset=Tiffin.objects.all()

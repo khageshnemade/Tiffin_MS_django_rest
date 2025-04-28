@@ -3,24 +3,28 @@ from rest_framework.response import Response
 from accounts.models import User
 from .models import Order
 from .serializers import OrderSerializer
-from accounts.permissions import IsCustomer,IsDeliveryBoy,IsAdmin
+from accounts.permissions import IsAdminOrCustomer,IsAdminOrDeliveryBoy,IsAdmin
 
 class OrderCreateView(generics.ListCreateAPIView):
     queryset=Order.objects.all()
     serializer_class=OrderSerializer
-    permission_classes=[IsCustomer,IsAdmin]
+    permission_classes=[IsAdminOrCustomer]
 
     def get_queryset(self):
-        return self.queryset.filter(customer=self.request.user)
+        if self.request.user.role == 'customer':
+            return self.queryset.filter(customer=self.request.user)
+        return self.queryset.all()
     
 #DeliveryBoy can see his deliveries
 class DeliveryListView(generics.ListAPIView):
     queryset=Order.objects.all()
     serializer_class=OrderSerializer
-    permission_classes=[IsDeliveryBoy,IsAdmin]
+    permission_classes=[IsAdminOrDeliveryBoy]
 
     def get_queryset(self):
-        return self.queryset.filter(delivery_boy=self.request.user)
+        if self.request.user.role == 'delivery_boy':
+            return self.queryset.filter(delivery_boy=self.request.user)
+        return self.queryset.all()
 
 class AssignDeliveryBoyView(generics.UpdateAPIView):
     queryset=Order.objects.all()

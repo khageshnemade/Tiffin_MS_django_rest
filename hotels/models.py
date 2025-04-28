@@ -12,11 +12,12 @@ class Hotel(models.Model):
         return self.name
     
 class Tiffin(models.Model):
-    hotel=models.ForeignKey(Hotel,on_delete=models.CASCADE,related_name='tiffins')
-    name=models.CharField(max_length=255)
-    description=models.TextField()
-    price=models.DecimalField(max_digits=6,decimal_places=2)
-    available=models.BooleanField(default=True)
-    
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='tiffins')
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    available = models.BooleanField(default=True)
+    image = models.ImageField(upload_to='tiffin_images/', blank=True, null=True)  # Image field
+
     def __str__(self):
         return self.name + " " + self.hotel.name
