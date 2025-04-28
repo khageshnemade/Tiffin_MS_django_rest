@@ -12,11 +12,13 @@ class HotelSerializer(serializers.ModelSerializer):
     
 class TiffinSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Tiffin
-        fields='__all__'
-   
+        model = Tiffin
+        fields = ['id', 'name', 'description', 'price', 'available', 'image', 'hotel']
 
-    def validate_image(image):
-        if image.size > 20 * 1024 * 1024:  # Limit file size to 5 MB
-            raise ValidationError("Image file size should not exceed 20 MB")
+    # Optional: Add a validation method if needed
+    def validate_image(self, value):
+        if value and not value.name.endswith(('.jpg', '.jpeg', '.png')):
+            raise serializers.ValidationError("Only .jpg, .jpeg, or .png files are allowed.")
+        return value
+
    

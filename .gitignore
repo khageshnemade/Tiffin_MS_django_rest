@@ -1,0 +1,46 @@
+# Byte-compiled / compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Caches
+*.cache
+*.log
+
+# Secret settings
+*.env
+config.yaml
+.env
+
+# Django-specific
+*.sqlite3
+*.db
+media/
+static/
+db.sqlite3
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Python environment
+*.egg-info/
+.Python
+env/
+venv/
+venv.bak/
+
+# VS Code settings
+.vscode/
+
+# Coverage reports
+htmlcov/
+*.coverage
+.coverage.*
+
+# Node.js modules (if applicable)
+node_modules/
+
+# Other settings
+.idea/
+*.swp
