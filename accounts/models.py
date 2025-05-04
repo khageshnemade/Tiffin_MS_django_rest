@@ -28,6 +28,8 @@ class User(AbstractBaseUser,PermissionsMixin):
     role=models.CharField(max_length=20,choices=(('admin','Admin'),('hotel_owner', 'Hotel Owner'),('customer', 'Customer'),('delivery_boy', 'Delivery Boy'),))
     is_active=models.BooleanField(default=True)
     is_staff=models.BooleanField(default=False)
+    location = models.CharField(max_length=255, null=True, blank=True)  # ✅ Add this
+
     date_joined=models.DateTimeField(default=timezone.now)
     
     objects=UserManager()

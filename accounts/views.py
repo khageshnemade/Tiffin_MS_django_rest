@@ -18,6 +18,13 @@ class RegisterView(generics.CreateAPIView):
     permission_classes=[AllowAny]
 
 
+
+class DeliveryBoyView(generics.ListAPIView):
+    queryset = User.objects.filter(role='delivery_boy')
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+
 class UserView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

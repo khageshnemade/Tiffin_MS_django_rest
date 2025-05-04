@@ -2,7 +2,13 @@ from rest_framework import serializers
 from .models import Hotel,Tiffin
 from django.core.exceptions import ValidationError
 
+class TiffinShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tiffin
+        fields = '__all__'
+
 class HotelSerializer(serializers.ModelSerializer):
+    tiffins = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model=Hotel
         fields='__all__'
@@ -10,15 +16,21 @@ class HotelSerializer(serializers.ModelSerializer):
         validated_data['owner']=self.context['request'].user
         return super().create(validated_data)
     
+
+
 class TiffinSerializer(serializers.ModelSerializer):
+    hotel_name = serializers.CharField(source='hotel.name', read_only=True)
+    hotel_location = serializers.CharField(source='hotel.location', read_only=True)
+    hotel_owner_username = serializers.CharField(source='hotel.owner.username', read_only=True)
+
     class Meta:
         model = Tiffin
-        fields = ['id', 'name', 'description', 'price', 'available', 'image', 'hotel']
+        fields = '__all__'  # or list fields explicitly if you want more control
+        # Example: ['id', 'hotel', 'name', 'description', 'price', 'available', 'image', 'hotel_name', 'hotel_location', 'hotel_owner_username']
 
-    # Optional: Add a validation method if needed
-    def validate_image(self, value):
-        if value and not value.name.endswith(('.jpg', '.jpeg', '.png')):
-            raise serializers.ValidationError("Only .jpg, .jpeg, or .png files are allowed.")
-        return value
+    def validate_image(self, image):
+        if image and image.size > 20 * 1024 * 1024:  # 20 MB
+            raise ValidationError("Image file size should not exceed 20 MB")
+        return image
 
    
